@@ -4,9 +4,9 @@ import git
 import subprocess  # Yeni bir işlem çalıştırmak için
 
 # GitHub repository URL ve kullanıcı bilgisi
-REPO_OWNER = 'kullanici_adi'  # GitHub kullanıcı adı
-REPO_NAME = 'repo_adi'        # GitHub repo adı
-REPO_DIR = '/path/to/repo'    # Depo yerel yolu
+REPO_OWNER = 'sefaakkoc'  # GitHub kullanıcı adı
+REPO_NAME = 'edirne'        # GitHub repo adı
+REPO_DIR = 'C:\Users\sefaa\Desktop\edirne'    # Depo yerel yolu
 
 # GitHub API URL'si
 API_URL = f'https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/releases/latest'
