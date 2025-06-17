@@ -1,59 +1,55 @@
 import os
 import requests
 import git
-import subprocess  # Yeni bir işlem çalıştırmak için
 
 # GitHub repository URL ve kullanıcı bilgisi
 REPO_OWNER = 'sefaakkoc'  # GitHub kullanıcı adı
 REPO_NAME = 'edirne'        # GitHub repo adı
-REPO_DIR = 'C:\\Users\\sefaa\\Desktop\\edirne'    # Depo yerel yolu
+REPO_DIR = 'C:\\Users\\sefaa\\Desktop\\edirne'    # Depo yerel yolu (programınızın bulunduğu dizin)
 
-# GitHub API URL'si
+# GitHub API URL'si (en son sürümü almak için)
 API_URL = f'https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/releases/latest'
 
 def check_for_update():
-    # GitHub API'sinden en son sürümü al
+    """GitHub API'sinden en son sürümü alır."""
     response = requests.get(API_URL)
     if response.status_code == 200:
         latest_release = response.json()
-        return latest_release['tag_name']
+        return latest_release['tag_name']  # Son sürüm numarasını döndürür
     else:
         print(f"GitHub API hatası: {response.status_code}")
         return None
 
 def update_repository():
+    """GitHub'dan yeni sürüm varsa, yerel repo'yu günceller."""
     try:
-        # Git deposunu aç
+        # Git depo objesi oluştur
         repo = git.Repo(REPO_DIR)
         
         # GitHub'dan yeni sürüm olup olmadığını kontrol et
         latest_version = check_for_update()
         if latest_version:
-            # Eğer repo güncel değilse, güncelleme işlemi başlat
-            print(f"Güncelleme mevcut. Sürüm: {latest_version}.")
-            origin = repo.remotes.origin
-            origin.fetch()
-            # Ana dalda güncelleme yap
-            repo.git.merge('origin/main')  # veya origin/master
-            print("Güncelleme başarılı!")
+            print(f"Güncelleme mevcut: {latest_version}.")
             
-            # Güncelleme tamamlandıktan sonra çalıştırılacak fonksiyonu çağır
-            run_after_update()
+            # Repo'yu güncellemek için origin'den fetch ve merge işlemi yap
+            origin = repo.remotes.origin
+            origin.fetch()  # Değişiklikleri uzak depodan al
+            repo.git.merge('origin/main')  # veya 'origin/master' kullanabilirsiniz
+            print("Güncelleme başarılı!")
         else:
             print("En son sürümde güncelleme yok.")
     except Exception as e:
         print(f"Bir hata oluştu: {str(e)}")
 
 def run_after_update():
-    # Güncelleme sonrası çalışacak kod burada yer alır
-    # Örneğin, bir script çalıştırmak:
+    """Güncelleme sonrası çalışacak kod."""
     print("Güncelleme tamamlandı, yeni kod çalıştırılıyor...")
-    
     try:
-        # Örneğin, güncel dosya ile bir Python scripti çalıştırmak
-        subprocess.run(['python', 'script.py'], check=True)
-    except subprocess.CalledProcessError as e:
+        # Güncellenen dosyaları çalıştırmak için örnek olarak:
+        os.system("python script.py")  # script.py yerine çalıştırmak istediğiniz dosya adı
+    except Exception as e:
         print(f"Script çalıştırma hatası: {e}")
 
 if __name__ == "__main__":
-    update_repository()
+    update_repository()  # Depoyu güncelle
+    run_after_update()   # Güncelleme sonrası çalışacak kod
